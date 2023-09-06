@@ -1,0 +1,8 @@
+.idea/
+.vscode/
+*.exe
+*.pyc
+
+models/.ipynb_checkpoints
+models/.virtual_documents
+*checkpoint.py
