@@ -1,5 +1,6 @@
 name: ci 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master 
@@ -18,6 +19,6 @@ jobs:
         with:
           key: ${{ github.ref }}
           path: .cache
-      - run: pip install mkdocs-material
+      - run: pip install mkdocs-material mkdocs-swagger-ui-tag
       - run: pip install pillow cairosvg
       - run: mkdocs gh-deploy --force
