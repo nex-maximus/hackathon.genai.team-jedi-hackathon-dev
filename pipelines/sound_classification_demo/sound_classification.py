@@ -130,45 +130,45 @@ def read_wav(file, as_float=False):
     return params.framerate, data
 
 
-def main():
-    args = build_argparser()
-
-    log.info('OpenVINO Runtime')
-    log.info('\tbuild: {}'.format(get_version()))
+def classify(input, model, sample_rate, device="CPU", labels=None, overlap=0):
+    #args = build_argparser()
+    print('OpenVINO Runtime')
+    print('\tbuild: {}'.format(get_version()))
     core = Core()
 
-    log.info('Reading model {}'.format(args.model))
-    model = core.read_model(args.model)
+    input_model = model
+    print('Reading model {}'.format(model))
+    model = core.read_model(model)
 
     if len(model.inputs) != 1:
-        log.error("Demo supports only models with 1 input layer")
+        print("Demo supports only models with 1 input layer")
         sys.exit(1)
     input_tensor_name = model.inputs[0].get_any_name()
     if len(model.outputs) != 1:
-        log.error("Demo supports only models with 1 output layer")
+        print("Demo supports only models with 1 output layer")
         sys.exit(1)
 
     batch_size, channels, one, length = model.inputs[0].shape
     if one != 1:
         raise RuntimeError("Wrong third dimension size of model input shape - {} (expected 1)".format(one))
 
-    hop = length - args.overlap if isinstance(args.overlap, int) else int(length * (1.0 - args.overlap))
+    hop = length - overlap if isinstance(overlap, int) else int(length * (1.0 - overlap))
     if hop < 0:
-        log.error("Wrong value for '-ol/--overlap' argument - overlapping more than clip length")
+        print("Wrong value for '-ol/--overlap' argument - overlapping more than clip length")
         sys.exit(1)
 
-    compiled_model = core.compile_model(model, args.device)
+    compiled_model = core.compile_model(model, device)
     output_tensor = compiled_model.outputs[0]
     infer_request = compiled_model.create_infer_request()
-    log.info('The model {} is loaded to {}'.format(args.model, args.device))
+    print('The model {} is loaded to {}'.format(input_model, device))
 
     labels = []
-    if args.labels:
-        with open(args.labels, "r") as file:
+    if labels:
+        with open(labels, "r") as file:
             labels = [line.rstrip() for line in file.readlines()]
 
     start_time = perf_counter()
-    audio = AudioSource(args.input, channels=channels, samplerate=args.sample_rate)
+    audio = AudioSource(input, channels=channels, samplerate=sample_rate)
 
     outputs = []
     clips = 0
@@ -182,12 +182,13 @@ def main():
             outputs.append(data)
             label = np.argmax(data)
             if chunk_start_time < audio.duration():
-                log.info("[{:.2f}-{:.2f}] - {:6.2%} {:s}".format(chunk_start_time, chunk_end_time, data[label],
+               print("[{:.2f}-{:.2f}] - {:6.2%} {:s}".format(chunk_start_time, chunk_end_time, data[label],
                                                                  labels[label] if labels else "Class {}".format(label)))
     total_latency = (perf_counter() - start_time) * 1e3
-    log.info("Metrics report:")
-    log.info("\tLatency: {:.1f} ms".format(total_latency))
-    sys.exit(0)
+    print("Metrics report:")
+    print("\tLatency: {:.1f} ms".format(total_latency))
+    #sys.exit(0)
+    return True
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+    #main()
