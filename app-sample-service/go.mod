@@ -1,4 +1,4 @@
-module app-data-export
+module app-sample-service
 
 go 1.20
 

@@ -1,6 +1,5 @@
 ########################################################################
  # Copyright (c) Intel Corporation 2023
- # SPDX-License-Identifier: BSD-3-Clause
 ########################################################################
 FROM grafana/grafana:10.1.0 AS builder
 

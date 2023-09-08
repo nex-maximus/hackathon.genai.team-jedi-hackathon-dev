@@ -1,6 +1,5 @@
 ########################################################################
  # Copyright (c) Intel Corporation 2023
- # SPDX-License-Identifier: BSD-3-Clause
 ########################################################################
 
 version: '3.7'
@@ -20,6 +19,25 @@ services:
       edgex-network: null
     ports:
       - 127.0.0.1:59740:59740/tcp
+    read_only: true
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    user: 2002:2001
+  app-sample-service:
+    container_name: app-sample-service
+    depends_on:
+      consul:
+        condition: service_started
+    environment:
+      EDGEX_SECURITY_SECRET_STORE: "false"
+      SERVICE_HOST: app-sample-service
+    hostname: app-data-export
+    image: hackathon/app-sample-service:dev
+    networks:
+      edgex-network: null
+    ports:
+      - 127.0.0.1:59741:59741/tcp
     read_only: true
     restart: always
     security_opt:

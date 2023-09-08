@@ -39,7 +39,7 @@ LABEL \
   version=${VERSION}
 
 # dumb-init is required as security-bootstrapper uses it in the entrypoint script
-RUN apk add --update --no-cache ca-certificates zeromq dumb-init
+RUN apk add --update --no-cache ca-certificates dumb-init
 
 # NOTE: these artifacts/names originate in the Makefile
 COPY --from=builder /app/Attribution.txt /Attribution.txt
