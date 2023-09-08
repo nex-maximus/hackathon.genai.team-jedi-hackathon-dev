@@ -1,0 +1,12 @@
+Writable:
+  LogLevel: "DEBUG"
+
+Service:
+  Host: "localhost"
+  Port: 59741 # Adjust if running multiple examples at the same time to avoid duplicate port conflicts
+  StartupMsg: "App sample service to do stuff has started"
+
+MessageBus:
+  Disabled: false  # Set to true if not using edgex-messagebus Trigger below and Metrics are not enabled
+  Optional:
+    ClientId: "app-sample-service"

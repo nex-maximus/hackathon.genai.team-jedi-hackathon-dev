@@ -8,28 +8,29 @@ APPVERSION=2.0.0
 # it must first remove the word 'required' so the offset of $2 is the same if there are multiple required modules
 SDKVERSION=$(shell cat ./go.mod | grep 'github.com/edgexfoundry/app-functions-sdk-go v' | sed 's/require//g' | awk '{print $$2}')
 
-project = hackathon
+PROJECT=hackathon
 MICROSERVICE=app-data-export
 GOFLAGS=-ldflags "-X github.com/edgexfoundry/app-functions-sdk-go/internal.SDKVersion=$(SDKVERSION) -X github.com/edgexfoundry/app-functions-sdk-go/internal.ApplicationVersion=$(APPVERSION)"
 
 GIT_SHA=$(shell git rev-parse HEAD)
 
-build:
+tidy:
 	go mod tidy
+
+build: tidy
 	$(GO) build $(GOFLAGS) -o $(MICROSERVICE)
 
 clean:
 	rm -f $(MICROSERVICE)
 
 # NOTE: This is only used for local development. Jenkins CI does not use this make target
-docker: clean
-	go mod tidy
+docker: clean tidy
 	docker build \
 	    --build-arg http_proxy \
 	    --build-arg https_proxy \
 		-f Dockerfile \
-		-t $(project)/$(MICROSERVICE):app-$(app_version) \
-		-t $(project)/$(MICROSERVICE):dev \
+		-t $(PROJECT)/$(MICROSERVICE):app-$(app_version) \
+		-t $(PROJECT)/$(MICROSERVICE):dev \
 		.
 
 docker-data-organizer:

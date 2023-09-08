@@ -14,10 +14,10 @@ import (
 	"github.com/edgexfoundry/app-functions-sdk-go/v3/pkg"
 	sdkTransforms "github.com/edgexfoundry/app-functions-sdk-go/v3/pkg/transforms"
 
-	influxTransforms "app-service-influx/pkg/transforms"
+	influxTransforms "app-data-export/pkg/transforms"
 )
 
-const serviceKey = "app-influx-export"
+const serviceKey = "app-data-export"
 
 func main() {
 	// turn off secure mode for examples. Not recommended for production
@@ -64,7 +64,7 @@ func main() {
 	os.Exit(0)
 }
 
-// Service's custom configuration which is loaded from the configuration.toml
+// Service's custom configuration which is loaded from the configuration.yaml
 type ServiceConfig struct {
 	MqttConfig sdkTransforms.MQTTSecretConfig
 }

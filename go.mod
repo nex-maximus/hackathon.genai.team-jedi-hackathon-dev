@@ -1,9 +1,9 @@
-module app-data-export
+module app-service-influx
 
 go 1.20
 
 require (
-	github.com/edgexfoundry/app-functions-sdk-go/v3 v3.0.1
+	github.com/edgexfoundry/app-functions-sdk-go/v3 v3.0.0
 	github.com/edgexfoundry/go-mod-core-contracts/v3 v3.0.0
 )
 
