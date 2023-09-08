@@ -27,7 +27,7 @@ def classify(text: str) -> str:
      modelPath = data["ModelPath"]
 
      pipelineStatus = sound_classification.classify(input=mediaPath, model=modelPath, device="CPU", sample_rate=16000)
-     print(pipelineStatus)
+     print("pipelineStatus:" + str(pipelineStatus))
      
      if pipelineStatus == True:
       return "Success"
