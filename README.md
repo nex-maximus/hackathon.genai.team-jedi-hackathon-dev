@@ -23,7 +23,7 @@ NEX Jedi Team Hackathon Microservice project - Development Repo
    Metrics report:
 	Latency: 21.1 ms`
 - Build bento docker - `make docker-build BENTO_TAG=<bento_image_name>:<bento_image_tag>` 
-- `<bento_image_name>:<bento_image_tag>` are output of make build, more details can be found in Makefie
+- `<bento_image_name>:<bento_image_tag>` are output of make build, more details can be found in Makefile
 - Run bento docker - `make run BENTO_TAG=<bento_image_name>:<bento_image_tag> PROJECT_REPO_PATH=<project_repo_path>`
 - `project_repo_path` is complete project repo path eg: /home/nesubuntu20nvda/Neethu/hackathon-team-jedi/team-jedi-hackathon-dev
 - Check portainer or terminal if container with name `<bento_image_name>:<bento_image_tag>` is created
