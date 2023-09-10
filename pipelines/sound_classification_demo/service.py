@@ -23,14 +23,15 @@ def classify(text: str) -> str:
     try:
      print("Input message received by the bentoml service: ",data)
    
-     mediaPath = data["MediaPath"]
-     modelPath = data["ModelPath"]
+     media_path = data["MediaPath"]
+     model_path = data["ModelPath"]
+     label_path = data["LabelPath"]
 
-     pipelineStatus = sound_classification.classify(input=mediaPath, model=modelPath, device="CPU", sample_rate=16000)
-     print("pipelineStatus:" + str(pipelineStatus))
+     inference_results = sound_classification.classify(input=media_path, model=model_path, sample_rate=16000, device="CPU", labelsFile=label_path )
+     print("inference_results:" + str(inference_results))
      
-     if pipelineStatus == True:
-      return "Success"
+     if inference_results != None:
+      return "Success, inference_results: " + str(inference_results)
      else:
       return "Failure"
     except Exception as e: 

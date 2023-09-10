@@ -15,8 +15,8 @@ NEX Jedi Team Hackathon Microservice project - Development Repo
 - Build bento service locally - `make build`
 - Serve bento locally - `make serve`
 - Open swagger api UI at `http://0.0.0.0:3000/`
-- Test the post /classify api by providing input text as {"MediaPath": "[PATH]/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav", "ModelPath": "[PATH]/team-jedi-hackathon-dev/models/aclnet/aclnet/aclnet_des_53.xml"}
-- If pipelines runs successfully, status `Success` is returned else it is `Failure`
+- Test the post /classify api by providing input text as {"MediaPath": "[PATH]/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav", "ModelPath": "[PATH]/team-jedi-hackathon-dev/models/aclnet/aclnet/aclnet_des_53.xml", "LabelPath": "[PATH]/team-jedi-hackathon-dev/models/aclnet/aclnet_53cl.txt"}
+- If pipelines runs successfully, status `Success + inference_results` is returned else it is `Failure`
 - Check the terminal to view inference output -
   
   [0.00-1.00] - 100.00% Class 50
@@ -26,6 +26,8 @@ NEX Jedi Team Hackathon Microservice project - Development Repo
   Metrics report:  
 	Latency: 21.1 ms
 
+  inference_results : {}
+  
 - Build bento docker - `make docker-build BENTO_TAG=<bento_image_name>:<bento_image_tag>` 
 - `<bento_image_name>:<bento_image_tag>` are output of make build, more details can be found in Makefile
 - Run bento docker - `make docker-run BENTO_TAG=<bento_image_name>:<bento_image_tag> PROJECT_REPO_PATH=<project_repo_path>`
@@ -33,7 +35,6 @@ NEX Jedi Team Hackathon Microservice project - Development Repo
 - Check portainer or terminal if container with name `<bento_image_name>:<bento_image_tag>` is created
 - Access the open swagger api UI at `http://0.0.0.0:3000/` and test the post /classify api for status "Success"
 - Check container logs for output
-
 
 # Name of Product
 ## Overview 
