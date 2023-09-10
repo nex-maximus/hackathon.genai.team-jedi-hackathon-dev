@@ -23,16 +23,31 @@ def classify(text: str) -> str:
     try:
      print("Input message received by the bentoml service: ",data)
    
-     mediaPath = data["MediaPath"]
-     modelPath = data["ModelPath"]
+     media_path = data["MediaPath"]
+     model_path = data["ModelPath"]
+     label_path = data["LabelPath"]
 
-     pipelineStatus = sound_classification.classify(input=mediaPath, model=modelPath, device="CPU", sample_rate=16000)
-     print("pipelineStatus:" + str(pipelineStatus))
+     inference_results = sound_classification.classify(input=media_path, model=model_path, sample_rate=16000, device="CPU", labelsFile=label_path )
+     print("inference_results:" + str(inference_results))
      
-     if pipelineStatus == True:
-      return "Success"
+     if inference_results != None:
+      return "Success, inference_results: " + str(inference_results)
      else:
       return "Failure"
     except Exception as e: 
      print(str(e))
      return "Failure"
+
+    '''if inference_results != None:
+      sound_classification.send_pipeline_inference_results(post_req_url, inference_results)
+       return "Success, inference_results: " + str(inference_results)
+     else:
+       raise Exception("Pipeline completed, but failed to send inference results")   
+    except Exception as e:
+      try:
+       print("Error occurred while handling the service: "+ str(e))
+       infereneceResults = {"Status": "PipelineFailed"}
+       sound_classification.send_pipeline_inference_results(post_req_url, inference_results)
+      finally:
+       print(str(e))
+       return "PipelineFailed"'''      
