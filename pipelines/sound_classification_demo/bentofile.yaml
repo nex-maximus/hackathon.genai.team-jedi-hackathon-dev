@@ -1,0 +1,6 @@
+service: "service.py:svc"
+labels:
+  owner: Intel-Team-Jedi
+  project: Hackathon
+python:
+  requirements_txt: "requirements.txt"
