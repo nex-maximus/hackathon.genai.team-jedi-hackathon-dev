@@ -38,6 +38,7 @@ def classify(text: str) -> str:
      print(str(e))
      return "Failure"
 
+    #TODO
     '''if inference_results != None:
       sound_classification.send_pipeline_inference_results(post_req_url, inference_results)
        return "Success, inference_results: " + str(inference_results)
