@@ -25,8 +25,8 @@ NEX Jedi Team Hackathon Microservice project - Development Repo
   
   Metrics report:  
 	Latency: 21.1 ms
-
-  inference_results : {}
+  
+  inference_results: {'timestamp': '2023-09-11 18:09:24.879513', 'inputVideo': '/home/nesubuntu20nvda/Neethu/hackathon-team-jedi/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav', 'inference': [{'videoTimestamp': '[0.00-1.00]', 'label': 'Gunshot', 'accuracy': '100.00%'}, {'videoTimestamp': '[1.00-2.00]', 'label': 'Door knock', 'accuracy': '15.64%'}], 'latency': 19.082383019849658}
   
 - Build bento docker - `make docker-build BENTO_TAG=<bento_image_name>:<bento_image_tag>` 
 - `<bento_image_name>:<bento_image_tag>` are output of make build, more details can be found in Makefile
