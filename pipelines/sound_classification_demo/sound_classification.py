@@ -20,6 +20,7 @@ import logging as log
 import sys
 from time import perf_counter
 import wave
+import datetime
 
 import numpy as np
 from openvino.runtime import Core, get_version
@@ -130,7 +131,7 @@ def read_wav(file, as_float=False):
     return params.framerate, data
 
 
-def classify(input, model, sample_rate, device="CPU", labels=None, overlap=0):
+def classify(input, model, sample_rate, device="CPU", labelsFile=None, overlap=0):
     #args = build_argparser()
     print('OpenVINO Runtime')
     print('\tbuild: {}'.format(get_version()))
@@ -163,16 +164,19 @@ def classify(input, model, sample_rate, device="CPU", labels=None, overlap=0):
     print('The model {} is loaded to {}'.format(input_model, device))
 
     labels = []
-    if labels:
-        with open(labels, "r") as file:
+    if labelsFile:
+        with open(labelsFile, "r") as file:
             labels = [line.rstrip() for line in file.readlines()]
 
+    print("labels: " + str(labels))
     start_time = perf_counter()
     audio = AudioSource(input, channels=channels, samplerate=sample_rate)
 
     outputs = []
     clips = 0
+    inference = []
     for idx, chunk in enumerate(audio.chunks(length, hop, num_chunks=batch_size)):
+        infer = {}
         chunk = np.reshape(chunk, model.inputs[0].shape)
         output = infer_request.infer({input_tensor_name: chunk})[output_tensor]
         clips += batch_size
@@ -184,11 +188,19 @@ def classify(input, model, sample_rate, device="CPU", labels=None, overlap=0):
             if chunk_start_time < audio.duration():
                print("[{:.2f}-{:.2f}] - {:6.2%} {:s}".format(chunk_start_time, chunk_end_time, data[label],
                                                                  labels[label] if labels else "Class {}".format(label)))
+               infer["videoTimestamp"] = "[{:.2f}-{:.2f}]".format(chunk_start_time, chunk_end_time)
+               infer["label"] = labels[label] if labels else "Class {}".format(label)
+               infer["accuracy"] = "{:6.2%}".format(data[label])
+               inference.append(infer)
+    
     total_latency = (perf_counter() - start_time) * 1e3
     print("Metrics report:")
     print("\tLatency: {:.1f} ms".format(total_latency))
+    inference_results = {"timestamp": str(datetime.datetime.now()) , "inputVideo": input, "inference": inference, "latency": total_latency}
+    print("inference_results : " + str(inference_results))
+ 
     #sys.exit(0)
-    return True
+    return inference_results
 
 #if __name__ == '__main__':
     #main()
