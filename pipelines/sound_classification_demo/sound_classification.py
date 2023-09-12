@@ -24,6 +24,7 @@ import datetime
 
 import numpy as np
 from openvino.runtime import Core, get_version
+import ovmsclient
 
 log.basicConfig(format='[ %(levelname)s ] %(message)s', level=log.DEBUG, stream=sys.stdout)
 
@@ -131,14 +132,17 @@ def read_wav(file, as_float=False):
     return params.framerate, data
 
 
-def classify(input, model, sample_rate, device="CPU", labelsFile=None, overlap=0):
+def classify(input, model, sample_rate, grpc_address="localhost", grpc_port=9001, device="CPU", labelsFile=None, overlap=0):
     #args = build_argparser()
     print('OpenVINO Runtime')
     print('\tbuild: {}'.format(get_version()))
     core = Core()
 
+    client = ovmsclient.make_grpc_client(grpc_address + ":" + grpc_port)
+    model_status = client.get_model_status(model_name="aclnet")
     input_model = model
     print('Reading model {}'.format(model))
+    print('OVMS serving this Model Status: {}'.format(model_status))
     model = core.read_model(model)
 
     if len(model.inputs) != 1:
