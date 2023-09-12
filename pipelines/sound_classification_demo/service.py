@@ -26,8 +26,10 @@ def classify(text: str) -> str:
      media_path = data["MediaPath"]
      model_path = data["ModelPath"]
      label_path = data["LabelPath"]
+     grpc_address = data["GatewayIP"]
+     grpc_port = data["Port"]
 
-     inference_results = sound_classification.classify(input=media_path, model=model_path, sample_rate=16000, device="CPU", labelsFile=label_path )
+     inference_results = sound_classification.classify(input=media_path, model=model_path, sample_rate=16000, grpc_address=grpc_address, grpc_port=grpc_port,device="CPU", labelsFile=label_path )
      print("inference_results:" + str(inference_results))
      
      if inference_results != None:

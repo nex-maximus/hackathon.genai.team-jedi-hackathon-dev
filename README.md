@@ -15,7 +15,7 @@ NEX Jedi Team Hackathon Microservice project - Development Repo
 - Build bento service locally - `make build`
 - Serve bento locally - `make serve`
 - Open swagger api UI at `http://0.0.0.0:3000/`
-- Test the post /classify api by providing input text as {"MediaPath": "[PATH]/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav", "ModelPath": "[PATH]/team-jedi-hackathon-dev/models/aclnet/aclnet/aclnet_des_53.xml", "LabelPath": "[PATH]/team-jedi-hackathon-dev/models/aclnet/aclnet_53cl.txt"}
+- Test the post /classify api by providing input text as {"MediaPath": "[PATH]/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav", "ModelPath": "[PATH]/team-jedi-hackathon-dev/models/aclnet/1/aclnet_des_53.xml", "LabelPath": "[PATH]/team-jedi-hackathon-dev/models/aclnet/aclnet_53cl.txt", "GatewayIP":"XXX.XXX.X.X", "Port":"9001"}
 - If pipelines runs successfully, status `Success + inference_results` is returned else it is `Failure`
 - Check the terminal to view inference output -
   
