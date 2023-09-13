@@ -1,11 +1,12 @@
 # Team Jedi Hackathon
 ## Overview
 This project allows developers to send a single channel sound file to a sound detection pipeline connected to business logic. 
-The business logic parses the inference results as data that may be exported to InfluxDB, a time-series database.
-This time-series data may then be viewed on a Grafana dashboard and customized to send email notifications.
+The business logic parses the inference results as data that is exported to InfluxDB, a time-series database.
+This time-series data can then be viewed on a Grafana dashboard and customized to send email notifications.
 
 -  **Programming Languages:** Python, Golang
--  **Technologies used :** Docker, Docker Compose, Make, Conda, OpenVino, BentoML, EdgeX
+-  **Technologies used :** Docker, Docker Compose, Make, Conda, BentoML, Grafana, InfluxDB 
+-  **Intel OpenSource Technologies used:** OpenVino Model Server (OVMS), EdgeX
 
 ## Target System Requirements
 -  **Disk Space needed**
@@ -14,7 +15,8 @@ This time-series data may then be viewed on a Grafana dashboard and customized t
 - Docker v24.0.0
 - Docker Compose v2.17.3
 - Golang v1.20
-- Conda Environment with Python v3.8
+- [Conda Environment](https://docs.conda.io/projects/miniconda/en/latest/miniconda-install.html) with Python v3.8
+- Sample Audio File - must be single channel and `.wav` format
 
 ## Microservice descriptions:
 
@@ -28,7 +30,7 @@ This time-series data may then be viewed on a Grafana dashboard and customized t
 
 ### Data Export Application Service
 
-This is an golang-based EdgeX example that provides the ability export data from the EdgeX Stack.
+This is a golang-based EdgeX example that provides the ability to export data from the EdgeX Stack.
 The example allows EdgeX Events and Reading to be sent to InfluxDB using line protocol. 
 This project utilizes the exporter to take data sent via MQTT on a specified topic and export it to InfluxDB using the MQTT Sender, a topic specific to InfluxDB and Telegraf. 
 
@@ -38,7 +40,7 @@ This project utilizes the exporter to take data sent via MQTT on a specified top
 
 Figure 1: Architecture Diagram
 
-In this project, a single-channel sound file is sent over REST from the Swagger UI to the BentoML Sound Detection Pipeline container. 
+In this project, a single-channel, wav-format sound file is sent over REST from the Swagger UI to the BentoML Sound Detection Pipeline container. 
 This container then calls OpenVino Model Server (OVMS) Docker container over gRPC to get the model status. 
 The Sound Detection Pipeline container will then run the Python inferencing and send the inference results over REST to the business logic application service.
 The business logic container is then responsible for parsing the inference results and sending it via MQTT to the data export service.
