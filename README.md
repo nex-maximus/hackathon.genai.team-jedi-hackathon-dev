@@ -1,6 +1,6 @@
 # team-jedi-hackathon-dev
 NEX Jedi Team Hackathon Microservice project - Development Repo
-For documentation, see the [GitHub Pages](https://github.io/intel-sandbox/team-jedi-hackathon/index.html).
+For documentation, see the [GitHub Pages](https://neethues-intel.github.io/team-jedi-hackathon-dev/).
 
 ## Running Documentation Locally
 
