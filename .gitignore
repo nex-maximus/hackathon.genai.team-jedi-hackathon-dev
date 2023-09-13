@@ -2,6 +2,7 @@
 .vscode/
 *.exe
 *.pyc
+docs/*
 
 models/.ipynb_checkpoints
 models/.virtual_documents
