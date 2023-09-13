@@ -3,9 +3,11 @@ NEX Jedi Team Hackathon Microservice project - Development Repo
 
 1. To build data export run `cd app-data-export` and run `make docker`
 
-2. To run the initial services, including the TIG stack, run `make run`
+2. To build sample service  run `cd app-sample-service` and run `make docker`
 
-3. **To run Bentoml pipelines-**
+3. To run the initial services, including the TIG stack, run `make run` under /team-jedi-hackathon-dev
+
+4. **To run Bentoml pipelines-**
 - You can run these commands directly on terminal, but to avoid any package environment issues, run them in a conda environment with python version 3.8 -
 - `conda create -n hackathon_env python=3.8`
 - `conda activate hackathon_env`
