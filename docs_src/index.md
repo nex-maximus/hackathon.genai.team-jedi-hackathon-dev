@@ -6,7 +6,7 @@ This time-series data can then be viewed on a Grafana dashboard and customized t
 
 -  **Programming Languages:** Python, Golang
 -  **Technologies used :** Docker, Docker Compose, Make, Conda, BentoML, Grafana, InfluxDB 
--  **Intel OpenSource Technologies used:** OpenVino Model Server (OVMS), EdgeX
+-  **Intel OpenSource Technologies used:** OpenVino, OpenVino Model Server (OVMS), EdgeX
 
 ## Target System Requirements
 -  **Disk Space needed**
