@@ -21,7 +21,7 @@ DOCKERS=docker-grafana
 GIT_SHA=$(shell git rev-parse HEAD)
 
 define COMPOSE_DOWN
-	docker compose -p edgex -f docker-compose-edgex.yml -f docker-compose-apps.yml -f docker-compose-monitor.yml down $1
+	docker compose -p edgex -f docker-compose-edgex.yml -f docker-compose-apps.yml -f docker-compose-monitor.yml -f docker-compose-ovms.yml down $1
 endef
 
 tidy:
@@ -43,11 +43,15 @@ test:
 run-portainer:
 	docker compose -p portainer -f docker-compose-portainer.yml up -d
 
+run-ovms:
+	docker compose -p edgex -f docker-compose-ovms.yml up -d
+
 run: docker-grafana
 	docker compose -p edgex \
 		-f docker-compose-edgex.yml \
 		-f docker-compose-apps.yml \
 		-f docker-compose-monitor.yml \
+		-f docker-compose-ovms.yml \
 		up -d
 
 down-portainer:

@@ -1,0 +1,17 @@
+{
+    "model_config_list": [
+        {
+            "config": {
+                "name": "aclnet",
+                "base_path": "/models/aclnet"
+            }
+
+        },
+        {
+            "config": {
+                "name": "aclnet-int8",
+                "base_path": "/models/aclnet-int8"
+            }
+        }
+    ]
+}
