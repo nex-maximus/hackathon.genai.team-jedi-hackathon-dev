@@ -6,10 +6,10 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <link href="assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.4.2, mkdocs-material-8.5.10" name="generator"/>
+<meta content="mkdocs-1.4.1, mkdocs-material-8.5.7" name="generator"/>
 <title>Overview - Team Jedi Hackathon - Remote Sensing Solutions</title>
-<link href="assets/stylesheets/main.472b142f.min.css" rel="stylesheet"/>
-<link href="assets/stylesheets/palette.08040f6c.min.css" rel="stylesheet"/>
+<link href="assets/stylesheets/main.20d9efc8.min.css" rel="stylesheet"/>
+<link href="assets/stylesheets/palette.cbb835fc.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
@@ -19,7 +19,7 @@
 <link href="stylesheets/extra.css" rel="stylesheet"/>
 <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 </head>
-<body data-md-color-accent="None" data-md-color-primary="None" data-md-color-scheme="default" dir="ltr">
+<body data-md-color-accent="none" data-md-color-primary="none" data-md-color-scheme="" dir="ltr">
 <input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
@@ -309,13 +309,6 @@ make docker
 </code></pre></div></p>
 </li>
 <li>
-<p>Build the data export container. 
-    <div class="highlight"><pre><span></span><code><span class="nb">cd</span> app-sample-service
-make docker
-<span class="nb">cd</span> ..
-</code></pre></div></p>
-</li>
-<li>
 <p>Create a Conda working environment, configure it, and activate.
     <div class="highlight"><pre><span></span><code>conda create -n hackathon_env <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.8
 conda activate hackathon_env
@@ -352,6 +345,13 @@ make build
 </li>
 </ol>
 <h2 id="run-the-application">Run the Application<a class="headerlink" href="#run-the-application" title="Permanent link">¶</a></h2>
+<ol>
+<li>Configure the type of sound you want to get notified with. 
+Update the <code>docker-compose-apps.yml</code> line 18, and add sounds based on the file in here <code>models/aclnet-int8/aclnet_53cl.txt</code></li>
+</ol>
+<p>Each item must be in a comma separated:</p>
+<div class="highlight"><pre><span></span><code>SOUNDS: "Gunshot,Door knock"
+</code></pre></div>
 <ol>
 <li>Run the stack of services from the project root directory.
     <div class="highlight"><pre><span></span><code>make run
@@ -410,7 +410,13 @@ The <code>PROJECT_REPO_PATH</code> is the full path to the <code>team-jedi-hacka
 <p><img alt="A screenshot of container logs shown in Portainer with the inference results from the sound pipeline." src="images/Portainer-bentoml-inference.png"/>
     Figure 3: Portainer container log screenshot</p>
 <ol>
-<li>Open the <a href="http://0.0.0.0:3001/grafana">Grafana Dashboard</a> to see the visualization of the inference results.</li>
+<li>
+<p>Open the <a href="http://0.0.0.0:3001/grafana">Grafana Dashboard</a> to see the visualization of the inference results.</p>
+</li>
+<li>
+<p>Open <a href="http://0.0.0.0:8086/grafana">influxDB</a> to visualize data as well. Use <code>admin</code> as username and the password set inside the <code>.env</code> file.
+Go to dashboards and import the file <code>telegraf/template.json</code></p>
+</li>
 </ol>
 <h2 id="api-documentation">API Documentation<a class="headerlink" href="#api-documentation" title="Permanent link">¶</a></h2>
 <blockquote>
@@ -462,7 +468,7 @@ where they should go to as the next step.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "search.suggest", "search.highlight", "navigation.top", "toc.integrate"], "search": "assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
-<script src="assets/javascripts/bundle.d6c3db9e.min.js"></script>
+<script src="assets/javascripts/bundle.8492ddcf.min.js"></script>
 <script src="https://unpkg.com/lunr/lunr.js"></script>
 <script>document$.subscribe(() => {
             window.update_swagger_ui_iframe_height = function (id) {

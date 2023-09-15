@@ -54,21 +54,14 @@ Provide step-by-step instructions for getting started.
 1. Install the listed [dependencies](#dependencies).
 2. Configure `DOCKER_INFLUXDB_INIT_PASSWORD` and `DOCKER_INFLUXDB_INIT_ADMIN_TOKEN` in the `.env` file for InfluxDB.
 
-2. Build the business logic container.
+3. Build the business logic container.
     ```bash
     cd app-sample-service
     make docker
     cd ..
     ```
 
-2. Build the data export container. 
-    ```bash
-    cd app-sample-service
-    make docker
-    cd ..
-    ```
-
-3. Create a Conda working environment, configure it, and activate.
+4. Create a Conda working environment, configure it, and activate.
     ```bash
     conda create -n hackathon_env python=3.8
     conda activate hackathon_env
@@ -80,7 +73,7 @@ Provide step-by-step instructions for getting started.
     !!! Note
         Use `conda list` to verify all packages in requirements.txt are installed.
 
-4. Build the BentoML sound detection pipeline service
+5. Build the BentoML sound detection pipeline service
     ```bash
     cd pipelines/sound_classification_demo
     make build
@@ -95,7 +88,7 @@ Provide step-by-step instructions for getting started.
 
     Figure 2: BentoML Build Output
 
-5. **[Optional]** Build the BentoML Docker Image from the `pipelines/sound_classification_demo` directory.
+6. **[Optional]** Build the BentoML Docker Image from the `pipelines/sound_classification_demo` directory.
     ```bash
     make docker-build BENTO_TAG=<bento_image_name>:<bento_image_tag>
     ```
@@ -105,7 +98,16 @@ Provide step-by-step instructions for getting started.
 
 ## Run the Application
 
-1. Run the stack of services from the project root directory.
+1. Configure the type of sound you want to get notified with. 
+Update the `docker-compose-apps.yml` line 18, and add sounds based on the file in here `models/aclnet-int8/aclnet_53cl.txt`
+
+Each item must be in a comma separated:
+
+```
+SOUNDS: "Gunshot,Door knock"
+```
+
+2. Run the stack of services from the project root directory.
     ```bash
     make run
     ```
@@ -113,7 +115,7 @@ Provide step-by-step instructions for getting started.
     ```bash
     make run-portainer
     ```
-2. Start the BentoML service from the `pipelines/sound_classification_demo` directory.
+3. Start the BentoML service from the `pipelines/sound_classification_demo` directory.
 
     | Run Method | Run Command |
     |------------|-------------|
@@ -124,8 +126,8 @@ Provide step-by-step instructions for getting started.
         In the example from setup, the `BENTO_TAG` would be `BENTO_TAG=sound_classification:r5lystssnwbweb5w`.
         The `PROJECT_REPO_PATH` is the full path to the `team-jedi-hackathon-dev` project.
 
-2. Open the [Swagger API UI](http://0.0.0.0:3000/).
-3. Test a POST request to the `/classify` API by providing the input text as
+4. Open the [Swagger API UI](http://0.0.0.0:3000/).
+5. Test a POST request to the `/classify` API by providing the input text as
     ```json
     {
       "MediaPath": "[PATH]/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav",
@@ -138,12 +140,15 @@ Provide step-by-step instructions for getting started.
    
     !!! Success
         If the pipeline runs successfully, the Response Code will be 200 and the Response Body will look like `Success, inference_results: {'timestamp': '2023-09-13 21:10:31.500582', 'inputVideo': '/home/ejlee/Documents/go-jedi/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav', 'inference': [{'videoTimestamp': '[0.00-1.00]', 'label': 'Gunshot', 'accuracy': '100.00%'}, {'videoTimestamp': '[1.00-2.00]', 'label': 'Door knock', 'accuracy': '15.64%'}], 'latency': 9.321213001385331}`
-4. To further verify the pipeline ran successfully, check the logs of the BentoML Pipeline container. The example below shows the logs from [Portainer](http://0.0.0.0:9000)
+6. To further verify the pipeline ran successfully, check the logs of the BentoML Pipeline container. The example below shows the logs from [Portainer](http://0.0.0.0:9000)
 
    ![A screenshot of container logs shown in Portainer with the inference results from the sound pipeline.](./images/Portainer-bentoml-inference.png)
     Figure 3: Portainer container log screenshot
 
-4. Open the [Grafana Dashboard](http://0.0.0.0:3001/grafana) to see the visualization of the inference results.
+7. Open the [Grafana Dashboard](http://0.0.0.0:3001/grafana) to see the visualization of the inference results.
+
+8. Open [influxDB](http://0.0.0.0:8086/grafana) to visualize data as well. Use `admin` as username and the password set inside the `.env` file.
+Go to dashboards and import the file `telegraf/template.json`
 
 ## API Documentation
 > If your microservices expose APIs, document each API endpoint, including its purpose, input parameters, expected output, and any authentication/authorization requirements.
