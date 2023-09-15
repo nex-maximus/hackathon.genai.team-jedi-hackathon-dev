@@ -13,6 +13,7 @@ from bentoml.io import Text
 import subprocess
 import json
 import sound_classification
+import requests
 
 svc = bentoml.Service("sound_classification", runners=[])
 
@@ -33,24 +34,27 @@ def classify(text: str) -> str:
      print("inference_results:" + str(inference_results))
      
      if inference_results != None:
-      return "Success, inference_results: " + str(inference_results)
+      send_pipeline_inference_results("http://app-sample-service:59741/api/v1/data", inference_results)
+      return "Success, inference_results: " + str(inference_results)      
      else:
       return "Failure"
     except Exception as e: 
      print(str(e))
      return "Failure"
 
-    #TODO
-    '''if inference_results != None:
-      sound_classification.send_pipeline_inference_results(post_req_url, inference_results)
-       return "Success, inference_results: " + str(inference_results)
-     else:
-       raise Exception("Pipeline completed, but failed to send inference results")   
+def send_pipeline_inference_results(url, json_data):
+    try:
+        # Convert the Python dictionary to a JSON string
+        json_payload = json.dumps(json_data)
+        
+        # Define headers with the content type
+        headers = {'Content-Type': 'application/json'}
+        
+        # Make the POST request
+        response = requests.post(url, data=json_payload, headers=headers)
+        
+        return response
+    
     except Exception as e:
-      try:
-       print("Error occurred while handling the service: "+ str(e))
-       infereneceResults = {"Status": "PipelineFailed"}
-       sound_classification.send_pipeline_inference_results(post_req_url, inference_results)
-      finally:
-       print(str(e))
-       return "PipelineFailed"'''      
+        print(f"An error occurred: {str(e)}")
+        return None  # Return None in case of an error

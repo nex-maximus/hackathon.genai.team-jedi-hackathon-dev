@@ -78,6 +78,31 @@ services:
     security_opt:
       - no-new-privileges:true
     user: 2002:2001
+  core-metadata:
+    container_name: edgex-core-metadata
+    depends_on:
+      consul:
+        condition: service_started
+      # database:
+      #   condition: service_started
+    environment:
+      EDGEX_SECURITY_SECRET_STORE: "false"
+      SERVICE_HOST: edgex-core-metadata
+    hostname: edgex-core-metadata
+    image: edgexfoundry/core-metadata:3.0.0
+    networks:
+      edgex-network: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 59881
+        published: "59881"
+        protocol: tcp
+    read_only: true
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    user: 2002:2001
 networks:
   edgex-network:
     name: edgex_edgex-network
