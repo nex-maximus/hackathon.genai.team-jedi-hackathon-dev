@@ -148,7 +148,23 @@ SOUNDS: "Gunshot,Door knock"
 7. Open the [Grafana Dashboard](http://0.0.0.0:3001/grafana) to see the visualization of the inference results.
 
 8. Open [influxDB](http://0.0.0.0:8086/grafana) to visualize data as well. Use `admin` as username and the password set inside the `.env` file.
-Go to dashboards and import the file `telegraf/template.json`
+
+Go to the dashboard section:
+
+![InfluxDB dashboard section](./images/influxdb1.png)
+
+Import the file `telegraf/template.json`
+
+![InfluxDB import dashboard file](./images/influxdb2.png)
+
+Click on `Sound Dashboard`
+
+![InfluxDB sound dashboard](./images/influxdb3.png)
+
+Once in the dashboard, increase the refresh rate to 10s:
+
+![InfluxDB increase refresh rate](./images/influxdb4.png)
+
 
 ## API Documentation
 > If your microservices expose APIs, document each API endpoint, including its purpose, input parameters, expected output, and any authentication/authorization requirements.

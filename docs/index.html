@@ -414,10 +414,17 @@ The <code>PROJECT_REPO_PATH</code> is the full path to the <code>team-jedi-hacka
 <p>Open the <a href="http://0.0.0.0:3001/grafana">Grafana Dashboard</a> to see the visualization of the inference results.</p>
 </li>
 <li>
-<p>Open <a href="http://0.0.0.0:8086/grafana">influxDB</a> to visualize data as well. Use <code>admin</code> as username and the password set inside the <code>.env</code> file.
-Go to dashboards and import the file <code>telegraf/template.json</code></p>
+<p>Open <a href="http://0.0.0.0:8086/grafana">influxDB</a> to visualize data as well. Use <code>admin</code> as username and the password set inside the <code>.env</code> file.</p>
 </li>
 </ol>
+<p>Go to the dashboard section:</p>
+<p><img alt="InfluxDB dashboard section" src="images/influxdb1.png"/></p>
+<p>Import the file <code>telegraf/template.json</code></p>
+<p><img alt="InfluxDB import dashboard file" src="images/influxdb2.png"/></p>
+<p>Click on <code>Sound Dashboard</code></p>
+<p><img alt="InfluxDB sound dashboard" src="images/influxdb3.png"/></p>
+<p>Once in the dashboard, increase the refresh rate to 10s:</p>
+<p><img alt="InfluxDB increase refresh rate" src="images/influxdb4.png"/></p>
 <h2 id="api-documentation">API Documentation<a class="headerlink" href="#api-documentation" title="Permanent link">¶</a></h2>
 <blockquote>
 <p>If your microservices expose APIs, document each API endpoint, including its purpose, input parameters, expected output, and any authentication/authorization requirements.
