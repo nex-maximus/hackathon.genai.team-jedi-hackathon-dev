@@ -49,7 +49,23 @@ Get Started on BentoML: [Tutorial](https://docs.bentoml.org/en/latest/tutorial.h
 5. This ML pipeline sends the following inference data to the business logic microservice -
 
     ```json
-    inference_results: {'timestamp': '2023-09-13 21:10:31.500582', 'inputVideo': '${HOME}/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav', 'inference': [{'videoTimestamp': '[0.00-1.00]', 'label': 'Gunshot', 'accuracy': '100.00%'}, {'videoTimestamp': '[1.00-2.00]', 'label': 'Door knock', 'accuracy': '15.64%'}], 'latency': 9.321213001385331}
+    {
+        'timestamp': '2023-09-13 21:10:31.500582',
+        'inputVideo': '${HOME}/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav', 
+        'inference': [
+            {
+            'videoTimestamp': '[0.00-1.00]', 
+            'label': 'Gunshot', 
+            'accuracy': '100.00%'
+            }, 
+            {
+            'videoTimestamp': '[1.00-2.00]', 
+            'label': 'Door knock', 
+            'accuracy': '15.64%'
+            }   
+        ],
+        'latency': 9.321213001385331
+    }
     ```
 
 <figure class="figure-image">
@@ -63,12 +79,6 @@ More examples for developing with BentoML can be found here for the [AiCSD proje
 
 The microservice for the business logic is developed using the the golang-based Edgex app services. Sound Classification microservice sends POST request with the inference data to the business logic microservice. Here the inference results are stored in the InfluxDB which are then queried to display the results on the Grafana dashboard.
 
-### Data Export Application Service
-
-This is a golang-based EdgeX example that provides the ability to export data from the EdgeX Stack.
-The example allows EdgeX Events and Reading to be sent to InfluxDB using line protocol. 
-This project utilizes the exporter to take data sent via MQTT on a specified topic and export it to InfluxDB using the MQTT Sender, a topic specific to InfluxDB and Telegraf. 
-
 ## How It Works
 
 ![Architecture diagram of the hackathon project showing how each service communicates to move data from the sound detection pipeline to receiving an email notification.](./images/Hackathon_TeamJediarch.jpg)
@@ -78,10 +88,7 @@ Figure 1: Architecture Diagram
 In this project, a single-channel, wav-format sound file is sent over REST from the Swagger UI to the BentoML Sound Detection Pipeline container. 
 This container then calls OpenVino Model Server (OVMS) Docker container over gRPC to get the model status. 
 The Sound Detection Pipeline container will then run the Python inferencing and send the inference results over REST to the business logic application service.
-The business logic container is then responsible for parsing the inference results and sending it via MQTT to the data export service.
-The Data Export service takes the MQTT results and sends them over MQTT to InfluxDB. 
-InfluxDB is responsible for storing the time-series data that is then visualized in a Grafana dashboard. 
-The Grafana dashboard is configured for viewing inference results and sending email notifications.
+The business logic container is then responsible for parsing the inference results and persisting it to the InfluxDB. Initially it was discussed to create a separate data layer using EdgeX for persisting the data to influxDB. However, later decided to make direct call to InfluxDB from business logic microservice to keep it simple as adding additional microservice to this solution was an overhead. Ideally architecture should have separated these out, but complexity of setting up the data layer via EdgeX made us pivot to make direct calls to database. InfluxDB is responsible for storing the time-series data that is then visualized in a Grafana dashboard. The Grafana dashboard is configured for viewing inference results and sending email notifications.
 
 ## Get Started
 Provide step-by-step instructions for getting started.
@@ -134,14 +141,11 @@ Provide step-by-step instructions for getting started.
 ## Run the Application
 
 1. Configure the type of sound you want to get notified with. 
-Update the `docker-compose-apps.yml` line 18, and add sounds based on the file in here `models/aclnet-int8/aclnet_53cl.txt`
-
-Each item must be in a comma separated:
-
-```
-SOUNDS: "Gunshot,Door knock"
-```
-
+ Update the `docker-compose-apps.yml` line 18, and add sounds based on the file in here `models/aclnet-int8/aclnet_53cl.txt`
+ Each item must be in a comma separated:
+ ```
+ SOUNDS: "Gunshot,Door knock"
+ ```
 2. Run the stack of services from the project root directory.
     ```bash
     make run
@@ -165,54 +169,114 @@ SOUNDS: "Gunshot,Door knock"
 5. Test a POST request to the `/classify` API by providing the input text as
     ```json
     {
-      "MediaPath": "[PATH]/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav",
-      "ModelPath": "[PATH]/team-jedi-hackathon-dev/models/aclnet/1/aclnet_des_53.xml",
-      "LabelPath": "[PATH]/team-jedi-hackathon-dev/models/aclnet/aclnet_53cl.txt", 
+      "MediaPath": "${HOME}/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav",
+      "ModelPath": "${HOME}/team-jedi-hackathon-dev/models/aclnet/1/aclnet_des_53.xml",
+      "LabelPath": "${HOME}/team-jedi-hackathon-dev/models/aclnet/aclnet_53cl.txt", 
       "GatewayIP":"XXX.XXX.X.X", 
       "Port":"9001"
     }
     ```
    
     !!! Success
-        If the pipeline runs successfully, the Response Code will be 200 and the Response Body will look like `Success, inference_results: {'timestamp': '2023-09-13 21:10:31.500582', 'inputVideo': '/home/ejlee/Documents/go-jedi/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav', 'inference': [{'videoTimestamp': '[0.00-1.00]', 'label': 'Gunshot', 'accuracy': '100.00%'}, {'videoTimestamp': '[1.00-2.00]', 'label': 'Door knock', 'accuracy': '15.64%'}], 'latency': 9.321213001385331}`
-6. To further verify the pipeline ran successfully, check the logs of the BentoML Pipeline container. The example below shows the logs from [Portainer](http://0.0.0.0:9000)
+        If the pipeline runs successfully, the Response Code will be 200 and the Response Body will look like `Success, inference_results: {'timestamp': '2023-09-13 21:10:31.500582', 'inputVideo': '${HOME}/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav', 'inference': [{'videoTimestamp': '[0.00-1.00]', 'label': 'Gunshot', 'accuracy': '100.00%'}, {'videoTimestamp': '[1.00-2.00]', 'label': 'Door knock', 'accuracy': '15.64%'}], 'latency': 9.321213001385331}`
 
-   ![A screenshot of container logs shown in Portainer with the inference results from the sound pipeline.](./images/Portainer-bentoml-inference.png)
-    Figure 3: Portainer container log screenshot
+6. To further verify the pipeline ran successfully, check the logs of the BentoML Pipeline container. The example below shows the logs from [Portainer][def]
+ ![A screenshot of container logs shown in Portainer with the inference results from the sound pipeline.](./images/Portainer-bentoml-inference.png)
+ Figure 3: Portainer container log screenshot
 
-7. Open the [Grafana Dashboard](http://0.0.0.0:3001/grafana) to see the visualization of the inference results.
-
-8. Open [influxDB](http://0.0.0.0:8086/grafana) to visualize data as well. Use `admin` as username and the password set inside the `.env` file.
-
-Go to the dashboard section:
-
-![InfluxDB dashboard section](./images/influxdb1.png)
-
-Import the file `telegraf/template.json`
-
-![InfluxDB import dashboard file](./images/influxdb2.png)
-
-Click on `Sound Dashboard`
-
-![InfluxDB sound dashboard](./images/influxdb3.png)
-
-Once in the dashboard, increase the refresh rate to 10s:
-
-![InfluxDB increase refresh rate](./images/influxdb4.png)
+7. Open [influxDB](http://0.0.0.0:8086/) to visualize data as well. Use `admin` as username and the password set inside the `.env` file.
+ Go to the dashboard section:
+ ![InfluxDB dashboard section](./images/influxdb1.png)
+ Import the file `telegraf/template.json`
+ ![InfluxDB import dashboard file](./images/influxdb2.png)
+ Click on `Sound Dashboard`
+ ![InfluxDB sound dashboard](./images/influxdb3.png)
+ Once in the dashboard, increase the refresh rate to 10s:
+ ![InfluxDB increase refresh rate](./images/influxdb4.png)
+8. Open the [Grafana Dashboard](http://0.0.0.0:3001/grafana) to see the visualization of the inference results.
+9. To setup email notification in Grafana -
+    
+ a. open grafana dashboard - http://0.0.0.0:3001/grafana (log in as admin, password is admin)
+ 
+ b. Go to Home/Alerting/Contact points
+ 
+ c. Edit the default contact point name, edit option will appear only if logged in as admin
+ 
+ d. Under addresses text box provide - alertgrafanaemail@gmail.com, gmail created for demo which is set in grafana.ini
+ 
+ e. Click Test
+ 
+ f. While clicking send test notification, following success message should be displayed - `Test Alert Sent` (need to be outside vpn)
+ 
+ g. Now save the contact point.
 
 
 ## API Documentation
-> If your microservices expose APIs, document each API endpoint, including its purpose, input parameters, expected output, and any authentication/authorization requirements.
-> Provide sample API requests and responses for clarity.
+1. Sound Classification Pipeline - Python Microservice
+   POST http://0.0.0.0:3000/classify
+    ```json
+    {
+      "MediaPath": "${HOME}/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav",
+      "ModelPath": "${HOME}/team-jedi-hackathon-dev/models/aclnet/1/aclnet_des_53.xml",
+      "LabelPath": "${HOME}/team-jedi-hackathon-dev/models/aclnet/aclnet_53cl.txt", 
+      "GatewayIP":"XXX.XXX.X.X", 
+      "Port":"9001"
+    }
+    ```
+   
+    !!! Success
+        If the pipeline runs successfully, the Response Code will be 200 and the Response Body will look like `Success, inference_results: {'timestamp': '2023-09-13 21:10:31.500582', 'inputVideo': '${HOME}/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav', 'inference': [{'videoTimestamp': '[0.00-1.00]', 'label': 'Gunshot', 'accuracy': '100.00%'}, {'videoTimestamp': '[1.00-2.00]', 'label': 'Door knock', 'accuracy': '15.64%'}], 'latency': 9.321213001385331}`
+
+2. Business Logic - Golang Microservice
+   ```bash
+     POST http://127.0.0.1:59741/api/v1/data
+     Payload:  {"inference": [{"videoTimestamp": "[0.00-1.00]", "label": "Gunshot", "accuracy": "100.00%"}, {"videoTimestamp": "[1.00-2.00]", "label": "something", "accuracy": "15.64%"}], "latency": 9.321213001385331}
+   ```
+    If request is successfull, then the Response Code will be 200 
 
 ## Testing
-> Discuss the testing approach you followed for your microservices.
-> Document unit tests, integration tests, and any other types of tests performed.
-> Include instructions on how to run the tests.
+
+1. Unit test for golang microservices using `go test`.
+ ```bash
+     cd ${HOME}/team-jedi-hackathon-dev/app-sample-service
+     go test ./...
+ ```
+2. Python microservices can be unit tested using `pytest`.(TODO)
+3. Golang microservices can be integration tested using Postman by send a POST request
+ ```bash
+     POST http://127.0.0.1:59741/api/v1/data
+     Payload:  {"inference": [{"videoTimestamp": "[0.00-1.00]", "label": "Gunshot", "accuracy": "100.00%"}, {"videoTimestamp": "[1.00-2.00]", "label": "something", "accuracy": "15.64%"}], "latency": 9.321213001385331}
+ ```
+4. Python AI/ML Pipelines can be integration tested using Swagger UI(steps explained above).
+
+5. Postman can also be used by sending a POST request
+ ```bash
+     POST http://0.0.0.0:3000/classify
+     Payload:  {"MediaPath": "${HOME}/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav", "ModelPath": "${HOME}/team-jedi-hackathon-dev/models/aclnet/1/aclnet_des_53.xml", "LabelPath": "${HOME}/team-jedi-hackathon-dev/models/aclnet/aclnet_53cl.txt", "GatewayIP":"XXX.XXX.X.X", "Port":"9001"}
+ ```
+6. Check [influxDB](http://0.0.0.0:8086/) to test and visualize the data(steps explained above).
 
 ## Summary and Next Steps
->Note: Provide 2-3 line description of what the user has successfully done and
->where they should go to as the next step.
+
+### Final Solution -
+This solutions aims to build an infrastructure for remote sensing, making it easy to integrate different AI/ML pipelines with minimal changes. Current solution supports a sound classification pipeline which raises an email alert notification when any sound perceived as a threat (e.g., gunshots, chainsaw etc.) is detected.
+
+### Solution Features –
+1. Fully distributed solution achieved through microservices and containerization
+1. Faster development of application services using open-source framework EdgeX
+1. Seamless interaction between solution components written in different languages – Golang based Business microservices and Python based AI/ML pipelines
+1. Easily integrate a new AI/ML pipeline (e.g. Intel OpenVINO Model Zoo examples) as a microservice using open-source tool – BentoML
+1. Dashboard & alert notifications added using open-source TIG stack – Telegraf, InfluxDB, Grafana
+1. Sound Classification pipeline executed using Intel OpenVINO and Intel OpenVINO Model Server (OVMS) serving model status.
+1. Security enabled via open-source framework EdgeX
+
+### Next Steps -
+Following couldn't be finished due to lack of time -
+
+1. Pytest unit tests for Python microservices.
+1. Grafana email notification feature is integrated, however finish creating the Grafana rules to send email notification.
+1. Couldn't test the microservices with validation service.
+1. Infer sound using Intel OVMS instead of Intel OpenVINO, contacted OVMS team for help.
 
 ## Troubleshooting
 
@@ -220,5 +284,6 @@ Once in the dashboard, increase the refresh rate to 10s:
 
 1. Sound Classification pipeline from OpenVINO model zoo didn't work initially. Raised [issue](https://github.com/openvinotoolkit/open_model_zoo/issues/3858) using github to get support on the same from the OpenVINO team.
 
-1. Access Grafana Dashboard using this link - http://0.0.0.0:3001/grafana. Accessing the link directly from portainer (http://0.0.0.0:3001) results in error as it doesn't append **grafafana** to the link.
+1. Access Grafana Dashboard using this link - http://0.0.0.0:3001/grafana. Accessing the link directly from portainer (http://0.0.0.0:3001) results in error as it doesn't append **grafana** to the link.
 
+1. For setting up the Grafana email notifications, user need to log in as admin.
