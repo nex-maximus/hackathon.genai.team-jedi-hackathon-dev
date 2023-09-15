@@ -1,0 +1,98 @@
+[
+    {
+        "apiVersion": "influxdata.com/v2alpha1",
+        "kind": "Dashboard",
+        "metadata": {
+            "name": "unbridled-booth-846001"
+        },
+        "spec": {
+            "charts": [
+                {
+                    "colors": [
+                        {
+                            "id": "base",
+                            "name": "laser",
+                            "type": "text",
+                            "hex": "#00C9FF"
+                        }
+                    ],
+                    "decimalPlaces": 2,
+                    "height": 5,
+                    "kind": "Single_Stat",
+                    "name": "Name this Cell",
+                    "queries": [
+                        {
+                            "query": "from(bucket: \"sound\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"label\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")"
+                        }
+                    ],
+                    "staticLegend": {},
+                    "width": 11
+                },
+                {
+                    "colors": [
+                        {
+                            "id": "base",
+                            "name": "white",
+                            "type": "text",
+                            "hex": "#ffffff"
+                        }
+                    ],
+                    "fieldOptions": [
+                        {
+                            "displayName": "_start",
+                            "fieldName": "_start",
+                            "visible": true
+                        },
+                        {
+                            "displayName": "_stop",
+                            "fieldName": "_stop",
+                            "visible": true
+                        },
+                        {
+                            "displayName": "_time",
+                            "fieldName": "_time",
+                            "visible": true
+                        },
+                        {
+                            "displayName": "_value",
+                            "fieldName": "_value",
+                            "visible": true
+                        },
+                        {
+                            "displayName": "_field",
+                            "fieldName": "_field",
+                            "visible": true
+                        },
+                        {
+                            "displayName": "_measurement",
+                            "fieldName": "_measurement",
+                            "visible": true
+                        },
+                        {
+                            "displayName": "data",
+                            "fieldName": "data",
+                            "visible": true
+                        }
+                    ],
+                    "height": 5,
+                    "kind": "Table",
+                    "name": "Name this Cell",
+                    "queries": [
+                        {
+                            "query": "from(bucket: \"sound\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"data\")\n  |> filter(fn: (r) => r[\"_field\"] == \"label\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")"
+                        }
+                    ],
+                    "staticLegend": {},
+                    "tableOptions": {
+                        "verticalTimeAxis": true
+                    },
+                    "timeFormat": "YYYY-MM-DD HH:mm:ss",
+                    "width": 11,
+                    "yPos": 5
+                }
+            ],
+            "description": "sound detection implementation",
+            "name": "Sound Dashboard"
+        }
+    }
+]
