@@ -5,7 +5,7 @@ The business logic parses the inference results as data that is exported to Infl
 This time-series data can then be viewed on a Grafana dashboard and customized to send email notifications.
 
 -  **Programming Languages:** Python, Golang
--  **Technologies used :** Docker, Docker Compose, Make, Conda, BentoML, Grafana, InfluxDB 
+-  **Technologies used :** Docker, Docker Compose, Make, Conda, BentoML, Telegraf, InfluxDB, Grafana 
 -  **Intel OpenSource Technologies used:** OpenVino, OpenVino Model Server (OVMS), EdgeX
 
 ## Target System Requirements
@@ -22,11 +22,46 @@ This time-series data can then be viewed on a Grafana dashboard and customized t
 
 ### BentoML Sound Detection Pipeline
 
-**TODO: Fill me in**
+BentoML is a Unified Model Serving Framework which makes it easy to create ML-powered prediction services that are ready to deploy and scale. BentoML easily wraps the ML pipelines around web services. It is used by Data Scientists and ML Engineers to:
+
+1. Accelerate and standardize the process of taking ML models to production
+
+2. Build scalable and high performance prediction services
+
+3. Continuously deploy, monitor, and operate prediction services in production
+
+Learn more: [BentoML](https://docs.bentoml.org/en/latest/)
+
+Open Source Repository: [GitHub](https://github.com/bentoml/BentoML)
+
+Get Started on BentoML: [Tutorial](https://docs.bentoml.org/en/latest/tutorial.html)
+
+#### Workflow
+
+1. Sound Classification Pipeline python example from the OpenVino Model Zoo is adopted and modified to build the ML pipeline for this use case.
+
+2. Bentos are created for this sound classification pipeline.
+
+3. BentoML is now used to build & deploy these Bentos docker containers.
+
+4. These Bentos can be tested using the [Swagger APIs](http://0.0.0.0:3000/). (Explained in detail below)
+
+5. This ML pipeline sends the following inference data to the business logic microservice -
+
+    ```json
+    inference_results: {'timestamp': '2023-09-13 21:10:31.500582', 'inputVideo': '${HOME}/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav', 'inference': [{'videoTimestamp': '[0.00-1.00]', 'label': 'Gunshot', 'accuracy': '100.00%'}, {'videoTimestamp': '[1.00-2.00]', 'label': 'Door knock', 'accuracy': '15.64%'}], 'latency': 9.321213001385331}
+    ```
+
+<figure class="figure-image">
+<img src="./images/ProcessWorkflow.jpg" alt="ML Pipeline Service Development & Deployment Workflow">
+<figcaption>ML Pipeline Service Development & Deployment Workflow</figcaption>
+</figure>
+
+More examples for developing with BentoML can be found here for the [AiCSD project](https://intel.github.io/AiCSD/pipelines/bentoml/developer-guide-bentos.html)
 
 ### Business Logic Application Service
 
-**TODO: Fill me in**
+The microservice for the business logic is developed using the the golang-based Edgex app services. Sound Classification microservice sends POST request with the inference data to the business logic microservice. Here the inference results are stored in the InfluxDB which are then queried to display the results on the Grafana dashboard.
 
 ### Data Export Application Service
 
@@ -124,8 +159,8 @@ Provide step-by-step instructions for getting started.
         In the example from setup, the `BENTO_TAG` would be `BENTO_TAG=sound_classification:r5lystssnwbweb5w`.
         The `PROJECT_REPO_PATH` is the full path to the `team-jedi-hackathon-dev` project.
 
-2. Open the [Swagger API UI](http://0.0.0.0:3000/).
-3. Test a POST request to the `/classify` API by providing the input text as
+3. Open the [Swagger API UI](http://0.0.0.0:3000/).
+4. Test a POST request to the `/classify` API by providing the input text as
     ```json
     {
       "MediaPath": "[PATH]/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav",
@@ -138,12 +173,13 @@ Provide step-by-step instructions for getting started.
    
     !!! Success
         If the pipeline runs successfully, the Response Code will be 200 and the Response Body will look like `Success, inference_results: {'timestamp': '2023-09-13 21:10:31.500582', 'inputVideo': '/home/ejlee/Documents/go-jedi/team-jedi-hackathon-dev/media/ak47s_gun_sound_mono.wav', 'inference': [{'videoTimestamp': '[0.00-1.00]', 'label': 'Gunshot', 'accuracy': '100.00%'}, {'videoTimestamp': '[1.00-2.00]', 'label': 'Door knock', 'accuracy': '15.64%'}], 'latency': 9.321213001385331}`
-4. To further verify the pipeline ran successfully, check the logs of the BentoML Pipeline container. The example below shows the logs from [Portainer](http://0.0.0.0:9000)
+
+5. To further verify the pipeline ran successfully, check the logs of the BentoML Pipeline container. The example below shows the logs from [Portainer](http://0.0.0.0:9000)
 
    ![A screenshot of container logs shown in Portainer with the inference results from the sound pipeline.](./images/Portainer-bentoml-inference.png)
     Figure 3: Portainer container log screenshot
 
-4. Open the [Grafana Dashboard](http://0.0.0.0:3001/grafana) to see the visualization of the inference results.
+6. Open the [Grafana Dashboard](http://0.0.0.0:3001/grafana) to see the visualization of the inference results.
 
 ## API Documentation
 > If your microservices expose APIs, document each API endpoint, including its purpose, input parameters, expected output, and any authentication/authorization requirements.
@@ -159,4 +195,10 @@ Provide step-by-step instructions for getting started.
 >where they should go to as the next step.
 
 ## Troubleshooting
->Include a section addressing common issues, error handling, and troubleshooting tips.
+
+1. While building the Sound Classification pipeline microservices using BentoMl, several package dependecy issues can be resolved by using conda environment. Make sure all packages are installed before building & running them.
+
+1. Sound Classification pipeline from OpenVINO model zoo didn't work initially. Raised [issue](https://github.com/openvinotoolkit/open_model_zoo/issues/3858) using github to get support on the same from the OpenVINO team.
+
+1. Access Grafana Dashboard using this link - http://0.0.0.0:3001/grafana. Accessing the link directly from portainer (http://0.0.0.0:3001) results in error as it doesn't append **grafafana** to the link.
+

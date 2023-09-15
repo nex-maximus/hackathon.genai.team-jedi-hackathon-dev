@@ -1,0 +1,11 @@
+apiVersion: 1
+contactPoints:
+    - orgId: 1
+      name: grafana-default-email
+      receivers:
+        - uid: f6974bab-f449-4c25-9937-d40e35ad87d9
+          type: email
+          settings:
+            addresses: alertgrafanaemail@gmail.com
+            singleEmail: false
+          disableResolveMessage: false

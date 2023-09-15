@@ -25,7 +25,7 @@ Provide a 2-3 line description of what this product allows the developer to do.
 >NOTE: Provide description, including architecture diagram, of how the product
 >works. All diagrams and screenshots must have alt-text and captions.
 
-![Add alt-text description of image here.](images/my-arch-diagram.png)
+![Add alt-text description of image here.] (images/my-arch-diagram.png)
 
 Figure 1: Architecture Diagram  
  
