@@ -258,10 +258,10 @@ Provide step-by-step instructions for getting started.
 
 ## Summary and Next Steps
 
-### Final Solution -
+### Final Solution
 This solutions aims to build an infrastructure for remote sensing, making it easy to integrate different AI/ML pipelines with minimal changes. Current solution supports a sound classification pipeline which raises an email alert notification when any sound perceived as a threat (e.g., gunshots, chainsaw etc.) is detected.
 
-### Solution Features –
+### Solution Features
 1. Fully distributed solution achieved through microservices and containerization
 1. Faster development of application services using open-source framework EdgeX
 1. Seamless interaction between solution components written in different languages – Golang based Business microservices and Python based AI/ML pipelines
@@ -270,7 +270,7 @@ This solutions aims to build an infrastructure for remote sensing, making it eas
 1. Sound Classification pipeline executed using Intel OpenVINO and Intel OpenVINO Model Server (OVMS) serving model status.
 1. Security enabled via open-source framework EdgeX
 
-### Next Steps -
+### Next Steps
 Following couldn't be finished due to lack of time -
 
 1. Pytest unit tests for Python microservices.
