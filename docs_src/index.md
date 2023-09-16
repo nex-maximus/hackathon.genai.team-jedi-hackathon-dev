@@ -274,7 +274,7 @@ This solutions aims to build an infrastructure for remote sensing, making it eas
 Following couldn't be finished due to lack of time -
 
 1. Pytest unit tests for Python microservices.
-1. Grafana email notification feature is integrated, however finish creating the Grafana rules to send email notification.
+1. Grafana email notification feature is integrated, however couldn't finish creating the Grafana rules to send email notification.
 1. Couldn't test the microservices with validation service.
 1. Infer sound using Intel OVMS instead of Intel OpenVINO, contacted OVMS team for help.
 
