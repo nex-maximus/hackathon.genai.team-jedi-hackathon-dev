@@ -1,0 +1,21 @@
+name: NEX-MAXIMUS-WORKFLOW
+on:
+  workflow_dispatch
+jobs:
+  Checkout:
+    runs-on: [self-hosted, hackathon]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+  GENAI-MICROSERVICE-REVIEW:
+    needs: Checkout
+    runs-on: [self-hosted, hackathon]
+    name: Microservice Tasks
+    steps:
+      - id: genai-maximus-action
+        uses: intel-sandbox/genai_src_files@feature/hackathon_caching
+    env:
+        GENERATE_SCORE: true
